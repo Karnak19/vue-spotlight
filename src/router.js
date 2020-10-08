@@ -2,28 +2,47 @@ import { ref } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 import Home from "./pages/Home";
+import User from "./components/User";
+import UserDashboard from "./components/User/Dashboard";
+import UserProfile from "./components/User/Profile";
 
 const routes = [
   { name: "home", path: "/", component: Home },
-  { name: "hey", path: "/hey", component: Home },
-  { name: "ho", path: "/ho", component: Home },
-  { name: "hi", path: "/hi", component: Home },
-  { name: "ha", path: "/ha", component: Home },
+  {
+    name: "user",
+    path: "/user",
+    component: User,
+    children: [
+      { path: "dashboard", component: UserDashboard },
+      { path: "profile", component: UserProfile },
+    ],
+  },
+  { name: "products", path: "/products", component: Home },
+  { name: "stocks", path: "/stocks", component: Home },
+  { name: "contact", path: "/contact", component: Home },
   { name: "hu", path: "/hu", component: Home },
 ];
 
-export const cleanRoutes = ref(
-  routes.map((r, i) => {
-    const rr = { id: i, ...r };
-    delete rr.component;
-    return rr;
-  })
-);
+const mapRecursion = (array, parentPath = undefined) => {
+  return array.map((el) => {
+    const val = {
+      ...el,
+    };
+    delete val.component;
+    console.log(val.path);
+    if (val.children) {
+      val.path = parentPath ? parentPath + "/" + val.path : val.path;
+      val.children = mapRecursion(val.children, parentPath);
+    }
+    return val;
+  });
+};
+
+export const cleanRoutes = ref(mapRecursion(routes));
 
 const router = createRouter({
-  // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
   history: createWebHashHistory(),
-  routes, // short for `routes: routes`
+  routes,
 });
 
 export default router;
