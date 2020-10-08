@@ -4,6 +4,11 @@
       <ul>
         <li v-for="r in state" :key="r.id">
           <router-link :to="r.path">{{ r.path }}</router-link>
+          <ul>
+            <li v-for="(sr, i) in r.children" :key="i">
+              <router-link :to="`${r.path}/${sr.path}`">{{ sr.path }}</router-link>
+            </li>
+          </ul>
         </li>
       </ul>
     </nav>
@@ -24,6 +29,11 @@ ul {
 }
 
 li {
-  min-width: 50px;
+  min-width: 100px;
+}
+
+ul li ul {
+  display: flex;
+  flex-direction: column;
 }
 </style>

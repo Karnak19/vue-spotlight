@@ -41,7 +41,7 @@ export default {
     );
 
     onMounted(() => {
-      // High chancs there is a better solution here
+      // High chances there is a better solution here
       document.querySelector("#spotlight").focus();
     });
 
