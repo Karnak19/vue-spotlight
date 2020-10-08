@@ -1,20 +1,40 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Navbar />
+  <router-view></router-view>
+  <Spotlight v-if="isSpotlightActive" :blur="blur" />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import { ref } from "vue";
+import ctrlK from "@/hooks/ctrlK";
+import Navbar from "@/components/Navbar";
+import Spotlight from "@/components/Spotlight";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Navbar,
+    Spotlight,
+  },
+  setup() {
+    const isSpotlightActive = ref(false);
+
+    ctrlK(isSpotlightActive);
+
+    const blur = () => {
+      setTimeout(() => {
+        isSpotlightActive.value = false;
+      }, 10);
+    };
+
+    return { isSpotlightActive, blur };
+  },
+};
 </script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -22,5 +42,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
