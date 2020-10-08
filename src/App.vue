@@ -23,7 +23,7 @@ export default {
     const blur = () => {
       setTimeout(() => {
         isSpotlightActive.value = false;
-      }, 10);
+      }, 100);
     };
 
     return { isSpotlightActive, blur };

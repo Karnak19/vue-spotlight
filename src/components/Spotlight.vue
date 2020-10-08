@@ -1,7 +1,7 @@
 <template>
   <div class="spotlight active">
     <div class="spotlight-bar">
-      <input type="text" v-model="input" @blur="blur" />
+      <input type="text" id="spotlight" v-model="input" @blur="blur" />
       <ul class="spotlight-suggestions">
         <li>{{ selectedSuggestion }}</li>
         <li v-for="r in suggestions" :key="r.id">
@@ -14,14 +14,13 @@
 
 <script>
 import { cleanRoutes } from "@/router";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 export default {
   props: {
     blur: Function,
   },
   setup() {
-    // TODO: Setup focus on input
     const input = ref("");
     const suggestions = ref([]);
     const selectedSuggestion = ref("");
@@ -40,6 +39,11 @@ export default {
         selectedSuggestion.value = suggestions.value[0];
       }
     );
+
+    onMounted(() => {
+      // High chancs there is a better solution here
+      document.querySelector("#spotlight").focus();
+    });
 
     return { input, suggestions, routes: cleanRoutes, selectedSuggestion };
   },
