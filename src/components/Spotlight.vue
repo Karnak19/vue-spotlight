@@ -65,7 +65,6 @@ export default {
       () => {
         suggestions.value = filterSuggest();
         selectedSuggestion.value = suggestions.value[0];
-        console.log(selectedSuggestion.value);
       }
     );
 

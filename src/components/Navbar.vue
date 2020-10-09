@@ -3,10 +3,10 @@
     <nav>
       <ul>
         <li v-for="r in state" :key="r.id">
-          <router-link :to="r.path">{{ r.path }}</router-link>
+          <router-link :to="r.path">{{ r.name }}</router-link>
           <ul>
             <li v-for="(sr, i) in r.children" :key="i">
-              <router-link :to="sr.path">{{ sr.path }}</router-link>
+              <router-link :to="sr.path">{{ sr.name }}</router-link>
             </li>
           </ul>
         </li>
@@ -17,6 +17,8 @@
 
 <script setup>
 import { cleanRoutes } from "@/router";
+
+// TODO : Recursive li in template
 
 export const state = cleanRoutes;
 </script>
