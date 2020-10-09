@@ -6,7 +6,7 @@
           <router-link :to="r.path">{{ r.path }}</router-link>
           <ul>
             <li v-for="(sr, i) in r.children" :key="i">
-              <router-link :to="`${r.path}/${sr.path}`">{{ sr.path }}</router-link>
+              <router-link :to="sr.path">{{ sr.path }}</router-link>
             </li>
           </ul>
         </li>

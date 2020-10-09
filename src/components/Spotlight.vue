@@ -1,10 +1,15 @@
 <template>
   <div class="spotlight active">
     <div class="spotlight-bar">
-      <input type="text" id="spotlight" v-model="input" @blur="blur" />
+      <form @submit.prevent="search">
+        <input type="text" id="spotlight" v-model="input" @blur="blur" />
+      </form>
       <ul class="spotlight-suggestions">
-        <li>{{ selectedSuggestion }}</li>
-        <li v-for="r in suggestions" :key="r.id">
+        <li
+          v-for="r in suggestions"
+          :key="r.id"
+          :class="{ active: r.name === selectedSuggestion.name }"
+        >
           <router-link :to="r.path">{{ r.name }}</router-link>
         </li>
       </ul>
@@ -15,28 +20,52 @@
 <script>
 import { cleanRoutes } from "@/router";
 import { onMounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 
 export default {
   props: {
     blur: Function,
   },
   setup() {
+    const router = useRouter();
     const input = ref("");
     const suggestions = ref([]);
     const selectedSuggestion = ref("");
+    const flat = ref(flatten(cleanRoutes.value).map((e) => e));
 
     const filterSuggest = () => {
-      const filtered = cleanRoutes.value.filter((el) => {
+      return flat.value.filter((el) => {
         return el.name.includes(input.value);
       });
-      return filtered;
     };
+
+    //TODO : Change selected value with arrow keys
+
+    const search = () => {
+      router.push(selectedSuggestion.value.path).then(() => {
+        document.querySelector("#spotlight").blur();
+      });
+    };
+
+    function flatten(items) {
+      const flat = [];
+
+      items.forEach((item) => {
+        flat.push({ name: item.name, path: item.path });
+        if (Array.isArray(item.children)) {
+          flat.push(...flatten(item.children));
+        }
+      });
+
+      return flat;
+    }
 
     watch(
       () => input.value,
       () => {
         suggestions.value = filterSuggest();
         selectedSuggestion.value = suggestions.value[0];
+        console.log(selectedSuggestion.value);
       }
     );
 
@@ -45,7 +74,7 @@ export default {
       document.querySelector("#spotlight").focus();
     });
 
-    return { input, suggestions, routes: cleanRoutes, selectedSuggestion };
+    return { input, suggestions, routes: cleanRoutes, selectedSuggestion, search };
   },
 };
 </script>

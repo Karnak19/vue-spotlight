@@ -13,8 +13,8 @@ const routes = [
     path: "/user",
     component: User,
     children: [
-      { path: "dashboard", component: UserDashboard },
-      { path: "profile", component: UserProfile },
+      { name: "dashboard", path: "dashboard", component: UserDashboard },
+      { name: "profile", path: "profile", component: UserProfile },
     ],
   },
   { name: "products", path: "/products", component: Home },
@@ -27,12 +27,11 @@ const mapRecursion = (array, parentPath = undefined) => {
   return array.map((el) => {
     const val = {
       ...el,
+      path: parentPath ? parentPath + "/" + el.path : el.path,
     };
     delete val.component;
-    console.log(val.path);
     if (val.children) {
-      val.path = parentPath ? parentPath + "/" + val.path : val.path;
-      val.children = mapRecursion(val.children, parentPath);
+      val.children = mapRecursion(val.children, val.path);
     }
     return val;
   });
