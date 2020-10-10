@@ -1,15 +1,12 @@
 <template>
   <div class="spotlight active">
     <div class="spotlight-bar">
+      {{ selectedSuggestion.name }}
       <form @submit.prevent="search">
         <input type="text" id="spotlight" v-model="input" @blur="blur" />
       </form>
       <ul class="spotlight-suggestions">
-        <li
-          v-for="r in suggestions"
-          :key="r.id"
-          :class="{ active: r.name === selectedSuggestion.name }"
-        >
+        <li v-for="r in suggestions" :key="r.id" :class="{ active: r.name === selectedSuggestion.name }">
           <router-link :to="r.path">{{ r.name }}</router-link>
         </li>
       </ul>
@@ -18,9 +15,10 @@
 </template>
 
 <script>
-import { cleanRoutes } from "@/router";
-import { onMounted, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { cleanRoutes } from '@/router';
+import flatten from '@/flatten';
 
 export default {
   props: {
@@ -28,38 +26,45 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const input = ref("");
+    const input = ref('');
     const suggestions = ref([]);
-    const selectedSuggestion = ref("");
+    const selectedIndex = ref(0);
+    const selectedSuggestion = ref('');
     const flat = ref(flatten(cleanRoutes.value).map((e) => e));
 
+    // router redirection
+    const search = () => {
+      router.push(selectedSuggestion.value.path).then(() => {
+        document.querySelector('#spotlight').blur();
+      });
+    };
+
+    // Navigate on suggestions with arrow keys
+    const pressArrow = (e) => {
+      if (e.keyCode === 40) {
+        selectedIndex.value = selectedIndex.value + 1;
+      }
+      if (e.keyCode === 38) {
+        selectedIndex.value = selectedIndex.value === 0 ? 0 : selectedIndex.value - 1;
+      }
+    };
+
+    // Changes the selected suggestion reactively to arrow keys navigation
+    watch(
+      () => selectedIndex.value,
+      () => {
+        selectedSuggestion.value = suggestions.value[selectedIndex.value];
+      }
+    );
+
+    // Filter the suggestion list from the input
     const filterSuggest = () => {
       return flat.value.filter((el) => {
         return el.name.includes(input.value);
       });
     };
 
-    //TODO : Change selected value with arrow keys
-
-    const search = () => {
-      router.push(selectedSuggestion.value.path).then(() => {
-        document.querySelector("#spotlight").blur();
-      });
-    };
-
-    function flatten(items) {
-      const flat = [];
-
-      items.forEach((item) => {
-        flat.push({ name: item.name, path: item.path });
-        if (Array.isArray(item.children)) {
-          flat.push(...flatten(item.children));
-        }
-      });
-
-      return flat;
-    }
-
+    // Changes the suggestion list to filtered one
     watch(
       () => input.value,
       () => {
@@ -70,7 +75,8 @@ export default {
 
     onMounted(() => {
       // High chances there is a better solution here
-      document.querySelector("#spotlight").focus();
+      document.querySelector('#spotlight').focus();
+      document.addEventListener('keydown', pressArrow);
     });
 
     return { input, suggestions, routes: cleanRoutes, selectedSuggestion, search };
