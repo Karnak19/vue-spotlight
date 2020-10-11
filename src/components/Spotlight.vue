@@ -1,9 +1,8 @@
 <template>
   <div class="spotlight active">
     <div class="spotlight-bar">
-      {{ selectedSuggestion.name }}
       <form @submit.prevent="search">
-        <input type="text" id="spotlight" v-model="input" @blur="blur" />
+        <input type="text" id="spotlight" placeholder="Want to navigate ?" v-model="input" @blur="blur" />
       </form>
       <ul class="spotlight-suggestions">
         <li v-for="r in suggestions" :key="r.id" :class="{ active: r.name === selectedSuggestion.name }">
@@ -15,7 +14,7 @@
 </template>
 
 <script>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { cleanRoutes } from '@/router';
 import flatten from '@/flatten';
@@ -42,9 +41,15 @@ export default {
     // Navigate on suggestions with arrow keys
     const pressArrow = (e) => {
       if (e.keyCode === 40) {
-        selectedIndex.value = selectedIndex.value + 1;
+        // arrow DOWN
+        if (selectedIndex.value >= suggestions.value.length - 1) {
+          selectedIndex.value = 0;
+        } else {
+          selectedIndex.value = selectedIndex.value + 1;
+        }
       }
       if (e.keyCode === 38) {
+        // arrow UP
         selectedIndex.value = selectedIndex.value === 0 ? 0 : selectedIndex.value - 1;
       }
     };
@@ -77,6 +82,10 @@ export default {
       // High chances there is a better solution here
       document.querySelector('#spotlight').focus();
       document.addEventListener('keydown', pressArrow);
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener('keydown', pressArrow);
     });
 
     return { input, suggestions, routes: cleanRoutes, selectedSuggestion, search };
@@ -116,6 +125,9 @@ export default {
 .spotlight-bar input {
   width: 100%;
   padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.6);
 }
 
 .spotlight-suggestions {
@@ -128,6 +140,7 @@ export default {
   padding: 5px 0;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  text-align: left;
 }
 
 .spotlight-suggestions li {
@@ -149,5 +162,9 @@ export default {
 
 .spotlight-suggestions li.active a {
   background: rgb(161, 161, 161);
+}
+
+.spotlight-suggestions li.active:hover a {
+  background: rgb(122, 122, 122);
 }
 </style>

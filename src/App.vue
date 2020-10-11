@@ -1,32 +1,25 @@
 <template>
   <Navbar />
   <router-view></router-view>
-  <Spotlight v-if="isSpotlightActive" :blur="blur" />
+  <Spotlight v-if="isActive" :blur="blur" />
 </template>
 
 <script>
-import { ref } from "vue";
-import ctrlK from "@/hooks/ctrlK";
-import Navbar from "@/components/Navbar";
-import Spotlight from "@/components/Spotlight";
+import useSpotlight from '@/hooks/useSpotlight';
+import Navbar from '@/components/Navbar';
+import Spotlight from '@/components/Spotlight';
 export default {
-  name: "App",
+  name: 'App',
   components: {
     Navbar,
     Spotlight,
   },
   setup() {
-    const isSpotlightActive = ref(false);
+    const { isActive, blur, keyboardShortcut } = useSpotlight();
 
-    ctrlK(isSpotlightActive);
+    keyboardShortcut();
 
-    const blur = () => {
-      setTimeout(() => {
-        isSpotlightActive.value = false;
-      }, 200);
-    };
-
-    return { isSpotlightActive, blur };
+    return { isActive, blur };
   },
 };
 </script>
@@ -34,9 +27,9 @@ export default {
 <style>
 * {
   box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
