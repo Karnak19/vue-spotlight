@@ -29,14 +29,14 @@ function useSpotlight() {
   };
   const blur = (timeout = 200) => {
     setTimeout(() => {
-      // isSpotlightActive.value = false;
+      isActive.value = false;
     }, timeout);
   };
 
   return {
     isActive,
     keyboardShortcut,
-    blur
+    blur,
   };
 }
 
