@@ -1,11 +1,15 @@
 <template>
-  <div>
-    Dashboard
-  </div>
+  <main>
+    <img src="https://i.imgur.com/hzajYy4.png" alt="" />
+  </main>
 </template>
 
 <script>
 export default {};
 </script>
 
-<style></style>
+<style scoped>
+img {
+  min-width: 70%;
+}
+</style>

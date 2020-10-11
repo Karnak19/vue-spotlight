@@ -107,6 +107,7 @@ export default {
   align-items: center;
   justify-content: center;
   transition: 0.3s;
+  margin-top: -500px;
 }
 
 .spotlight.active {

@@ -1,5 +1,6 @@
 <template>
-  User page
+  <h1>USER PAGE</h1>
+  <hr />
   <router-view></router-view>
 </template>
 

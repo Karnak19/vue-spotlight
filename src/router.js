@@ -1,33 +1,33 @@
-import { ref } from "vue";
-import { createRouter, createWebHashHistory } from "vue-router";
+import { ref } from 'vue';
+import { createRouter, createWebHashHistory } from 'vue-router';
 
-import Home from "./pages/Home";
-import User from "./components/User";
-import UserDashboard from "./components/User/Dashboard";
-import UserProfile from "./components/User/Profile";
+import Home from './pages/Home';
+import Products from './pages/Products';
+import Contact from './pages/Contact';
+import User from './components/User';
+import UserDashboard from './components/User/Dashboard';
+import UserProfile from './components/User/Profile';
 
 const routes = [
-  { name: "home", path: "/", component: Home },
+  { name: 'home', path: '/', component: Home },
   {
-    name: "user",
-    path: "/user",
+    name: 'user',
+    path: '/user',
     component: User,
     children: [
-      { name: "dashboard", path: "dashboard", component: UserDashboard },
-      { name: "profile", path: "profile", component: UserProfile },
+      { name: 'dashboard', path: 'dashboard', component: UserDashboard },
+      { name: 'profile', path: 'profile', component: UserProfile },
     ],
   },
-  { name: "products", path: "/products", component: Home },
-  { name: "stocks", path: "/stocks", component: Home },
-  { name: "contact", path: "/contact", component: Home },
-  { name: "hu", path: "/hu", component: Home },
+  { name: 'products', path: '/products', component: Products },
+  { name: 'contact', path: '/contact', component: Contact },
 ];
 
 const mapRecursion = (array, parentPath = undefined) => {
   return array.map((el) => {
     const val = {
       ...el,
-      path: parentPath ? parentPath + "/" + el.path : el.path,
+      path: parentPath ? parentPath + '/' + el.path : el.path,
     };
     delete val.component;
     if (val.children) {

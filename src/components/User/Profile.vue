@@ -1,9 +1,15 @@
 <template>
-  <div>Profile</div>
+  <main>
+    <img src="https://i.imgur.com/E6O4sAx.png" alt="" />
+  </main>
 </template>
 
 <script>
 export default {};
 </script>
 
-<style></style>
+<style scoped>
+img {
+  min-width: 60%;
+}
+</style>
