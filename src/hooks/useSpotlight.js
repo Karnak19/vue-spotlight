@@ -29,7 +29,7 @@ function useSpotlight() {
   };
   const blur = (timeout = 200) => {
     setTimeout(() => {
-      isActive.value = false;
+      // isActive.value = false;
     }, timeout);
   };
 
