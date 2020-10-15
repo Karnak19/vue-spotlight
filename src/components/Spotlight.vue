@@ -167,12 +167,12 @@ export default {
 
 .spotlight-suggestions li.active a {
   color: black;
+  background: rgba(23, 22, 22, 0.3);
 
 } 
 
 .spotlight-suggestions li.active:hover a {
   color: white;
-  background: rgba(23, 22, 22, 0.3);
 
 }
 </style>
