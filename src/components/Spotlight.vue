@@ -14,22 +14,50 @@
 </template>
 
 <script>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { cleanRoutes } from '@/router';
-import flatten from '@/flatten';
 
 export default {
   props: {
     blur: Function,
+    routes: Array,
   },
-  setup() {
+  setup(props) {
+    const { routes } = toRefs(props);
     const router = useRouter();
     const input = ref('');
     const suggestions = ref([]);
     const selectedIndex = ref(0);
     const selectedSuggestion = ref('');
-    const flat = ref(flatten(cleanRoutes.value).map((e) => e));
+
+    // Create
+    const mapRecursion = (array, parentPath = undefined) => {
+      return array.map((el) => {
+        const val = {
+          ...el,
+          path: parentPath ? parentPath + '/' + el.path : el.path,
+        };
+        delete val.component;
+        if (val.children) {
+          val.children = mapRecursion(val.children, val.path);
+        }
+        return val;
+      });
+    };
+
+    // flat all children routes to a 0 depth array
+    const flatten = (items) => {
+      const flat = [];
+      items.forEach((item) => {
+        flat.push({ name: item.name, path: item.path });
+        if (Array.isArray(item.children)) {
+          flat.push(...flatten(item.children));
+        }
+      });
+      return flat;
+    };
+
+    const flat = ref(flatten(mapRecursion(routes.value)).map((e) => e));
 
     // router redirection
     const search = () => {
@@ -39,7 +67,7 @@ export default {
     };
 
     // Navigate on suggestions with arrow keys
-    const pressArrow = (e) => {
+    const pressKeys = (e) => {
       if (e.keyCode === 40) {
         // arrow DOWN
         if (selectedIndex.value >= suggestions.value.length - 1) {
@@ -52,6 +80,18 @@ export default {
         // arrow UP
         selectedIndex.value = selectedIndex.value === 0 ? 0 : selectedIndex.value - 1;
       }
+
+      // Escape key
+      if (e.keyCode === 27) {
+        document.querySelector('#spotlight').blur();
+      }
+    };
+
+    // Filter the suggestion list from the input
+    const filterSuggest = () => {
+      return flat.value.filter((el) => {
+        return el.name.includes(input.value);
+      });
     };
 
     // Changes the selected suggestion reactively to arrow keys navigation
@@ -61,13 +101,6 @@ export default {
         selectedSuggestion.value = suggestions.value[selectedIndex.value];
       }
     );
-
-    // Filter the suggestion list from the input
-    const filterSuggest = () => {
-      return flat.value.filter((el) => {
-        return el.name.includes(input.value);
-      });
-    };
 
     // Changes the suggestion list to filtered one
     watch(
@@ -81,14 +114,14 @@ export default {
     onMounted(() => {
       // High chances there is a better solution here
       document.querySelector('#spotlight').focus();
-      document.addEventListener('keydown', pressArrow);
+      document.addEventListener('keydown', pressKeys);
     });
 
     onUnmounted(() => {
-      document.removeEventListener('keydown', pressArrow);
+      document.removeEventListener('keydown', pressKeys);
     });
 
-    return { input, suggestions, routes: cleanRoutes, selectedSuggestion, search };
+    return { input, suggestions, selectedSuggestion, search };
   },
 };
 </script>

@@ -1,17 +1,16 @@
 <template>
-  <Navbar />
   <router-view></router-view>
-  <Spotlight v-if="isActive" :blur="blur" />
+  <Spotlight v-if="isActive" :blur="blur" :routes="routes" />
 </template>
 
 <script>
 import useSpotlight from '@/hooks/useSpotlight';
-import Navbar from '@/components/Navbar';
 import Spotlight from '@/components/Spotlight';
+import { routes } from '@/router';
+
 export default {
   name: 'App',
   components: {
-    Navbar,
     Spotlight,
   },
   setup() {
@@ -19,7 +18,7 @@ export default {
 
     keyboardShortcut();
 
-    return { isActive, blur };
+    return { isActive, blur, routes };
   },
 };
 </script>
