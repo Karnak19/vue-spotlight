@@ -151,7 +151,7 @@ export default {
 .spotlight-bar {
   position: relative;
   width: 350px;
-  background: whitesmoke;
+  background:  rgba(67,84,102,1) 100%;
   border-radius: 5px;
   padding: 5px;
 }
@@ -167,7 +167,7 @@ export default {
 .spotlight-suggestions {
   position: absolute;
   top: 100%;
-  background: whitesmoke;
+  background: linear-gradient(0deg, rgba(96,241,173,0.8841737378545168) 2%, rgba(77,186,135,0.94859950816264) 17%, rgba(17,156,98,0.9514006286108193) 29%, rgba(67,84,102,1) 100%);
   left: 0;
   right: 0;
   margin: -5px 0 0 0;
@@ -178,6 +178,7 @@ export default {
 }
 
 .spotlight-suggestions li {
+  opacity: 80%;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -187,18 +188,24 @@ export default {
   display: block;
   text-decoration: none;
   padding: 10px 15px;
-  color: inherit;
+  color: black;
 }
 
 .spotlight-suggestions li:hover a {
-  background: rgb(194, 194, 194);
+  transition: 0.5s;
+  color: white;
+  background: rgba(23, 22, 22, 0.3);
+
 }
 
 .spotlight-suggestions li.active a {
-  background: rgb(161, 161, 161);
-}
+  color: black;
+  background: rgba(23, 22, 22, 0.3);
+
+} 
 
 .spotlight-suggestions li.active:hover a {
-  background: rgb(122, 122, 122);
+  color: white;
+
 }
 </style>
